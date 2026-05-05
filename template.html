@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titolo Articolo | Aviation Eagle Journal</title>
+    
+    <style>
+        :root {
+            --white: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666;
+            --accent-gold: #d4af37;
+            --border-light: #eeeeee;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--white);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigazione Superiore */
+        header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-small { height: 35px; }
+
+        /* Struttura Articolo */
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        .article-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .category-tag {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            line-height: 1.2;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .meta-info {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Immagine Copertina */
+        .featured-image {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 3rem;
+        }
+
+        /* Corpo del Testo */
+        .content {
+            font-size: 1.15rem;
+        }
+
+        .content h2 {
+            margin: 2.5rem 0 1rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .content p { margin-bottom: 1.5rem; }
+
+        .content blockquote {
+            border-left: 3px solid var(--text-main);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        /* Footer Articolo */
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .article-container { padding: 2rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-link">← Torna al Blog</a>
+        <img src="https://media.aviationeagle.co.uk/logo.png" alt="Logo" class="logo-small">
+        <div style="width: 80px;"></div> <!-- Spacer per bilanciamento -->
+    </header>
+
+    <main class="article-container">
+        <article>
+            <div class="article-header">
+                <span class="category-tag">Operativo</span>
+                <h1>Protocollo di Avvicinamento Eagle One: Nuovi Standard 2026</h1>
+                <div class="meta-info">
+                    Pubblicato il 5 Maggio 2026 • Scritto dal Primo Ufficiale
+                </div>
+            </div>
+
+            <img src="https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&w=1200" alt="Cockpit Aviation Eagle" class="featured-image">
+
+            <div class="content">
+                <p>
+                    L'efficienza operativa è la pietra angolare della nostra missione. Con l'introduzione delle nuove procedure di navigazione satellitare, il comando di <strong>Aviation Eagle</strong> ha stabilito una serie di linee guida per ottimizzare ogni fase del volo.
+                </p>
+
+                <h2>1. Analisi dei Dati di Bordo</h2>
+                <p>
+                    Ogni decisione presa in cabina deve essere supportata da dati oggettivi. La precisione non è un optional, ma un requisito fondamentale per garantire la sicurezza del velivolo e dell'equipaggio.
+                </p>
+
+                <blockquote>
+                    "La verità oggettiva è l'unico parametro che conta quando ci si trova a 35.000 piedi di quota." 
+                    — Comandante Eagle One
+                </blockquote>
+
+                <h2>2. Ottimizzazione delle Rotte</h2>
+                <p>
+                    Grazie ai nuovi algoritmi di calcolo, siamo ora in grado di ridurre l'impatto ambientale mantenendo performance di volo superiori. Questo articolo esplora i dettagli tecnici di tali implementazioni.
+                </p>
+            </div>
+        </article>
+
+        <footer>
+            © 2026 Aviation Eagle. Intelligence & Operazioni Aeronautiche.
+        </footer>
+    </main>
+
+</body>
+</html>
