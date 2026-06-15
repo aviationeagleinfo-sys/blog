@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Volo TAP - Aviation Eagle</title>
+    <link rel="icon" type="image/x-icon" href="https://media.aviationeagle.co.uk/favicon.ico">
+    
+    <style>
+        :root {
+            --tap-red: #e31937;
+            --tap-green: #00965d;
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: #ffffff;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 0px; /* Design squadrato e professionale */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* Header Layout */
+        .header-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 30px;
+        }
+
+        .ae-logo {
+            height: 35px;
+            margin-bottom: 25px;
+        }
+
+        .tap-logo-large {
+            height: 100px; /* Logo TAP Grande */
+            width: auto;
+            object-fit: contain;
+        }
+        .tap-logo-large1 {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        h2 {
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        /* Flight Sections */
+        .flight-section {
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            background: #fcfcfc;
+        }
+
+        .flight-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--tap-green) 50%, var(--tap-red) 50%);
+        }
+
+        .flight-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .flight-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        /* Form Styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        input[type="text"], input[type="date"], textarea, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            font-size: 1rem;
+            color: #000;
+            box-sizing: border-box;
+            background: #fff;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #000;
+            outline: none;
+        }
+
+        textarea {
+            height: 150px;
+            border: 1px solid #000;
+        }
+
+        /* Custom Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            margin: 30px 0;
+        }
+
+        .checkbox-container input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--tap-green);
+        }
+
+        .checkbox-container label {
+            text-transform: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 0;
+        }
+
+        /* Buttons */
+        .btn-add {
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            padding: 10px 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-bottom: 40px;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        .btn-submit {
+            background: var(--tap-green);
+            color: #fff;
+            border: none;
+            padding: 18px;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .file-upload-info {
+            font-size: 0.75rem;
+            color: var(--tap-red);
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-layout">
+        <a href="https://aviationeagle.co.uk">
+            <img src="https://media.aviationeagle.co.uk/Aviation-Eagle-Compact-TM-RBG.png" alt="Aviation Eagle" class="ae-logo">
+        </a>
+        <img src="https://media.aviationeagle.co.uk/loghi/europa/TAP(COMPACT).png" alt="TAP Air Portugal" class="tap-logo-large">
+        <h2>Report Esperienza di Volo</h2>
+    </div>
+    
+    <form id="reviewForm">
+        <div id="flightsContainer">
+            <div class="flight-section" id="flight1">
+                <div class="flight-header">
+                    <span class="flight-title">Segmento di Volo 01</span>
+                    <img src="https://media.aviationeagle.co.uk/loghi/europa/TAP(COMPACT).png" alt="TAP Air Portugal" class="tap-logo-large1">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Numero Volo</label>
+                        <input type="text" class="flight-number" required placeholder="TP000">
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" class="flight-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Origine (ICAO/IATA)</label>
+                        <input type="text" class="flight-origin" required placeholder="LIS">
+                    </div>
+                    <div class="form-group">
+                        <label>Destinazione (ICAO/IATA)</label>
+                        <input type="text" class="flight-destination" required placeholder="JFK">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="addFlightBtn" class="btn-add">+ Aggiungi scalo operato TAP</button>
+
+        <div class="form-group">
+            <label>Analisi del Volo e Recensione</label>
+            <textarea id="reviewText" required placeholder="Descrivi il servizio, l'equipaggio, il comfort e l'esperienza generale..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Allegati Tecnici / Foto (Salvati nel Database)</label>
+            <input type="file" id="fileAttachment" accept="image/*">
+            <div class="file-upload-info">Dimensione massima consentita: 1MB. Le immagini grandi verranno ottimizzate automaticamente.</div>
+        </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="allowPublish">
+            <label for="allowPublish">Autorizzo Aviation Eagle alla pubblicazione del presente report nel blog ufficiale.</label>
+        </div>
+
+        <button type="submit" class="btn-submit">Invia Report alla Redazione</button>
+    </form>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // CONFIGURAZIONE FIREBASE
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let flightCount = 1;
+    const maxFlights = 3;
+
+    // Aggiunta dinamica voli
+    document.getElementById('addFlightBtn').addEventListener('click', () => {
+        if (flightCount < maxFlights) {
+            flightCount++;
+            const flightDiv = document.createElement('div');
+            flightDiv.classList.add('flight-section');
+            flightDiv.id = `flight${flightCount}`;
+            flightDiv.innerHTML = `
+                <div class="flight-header">
+                    <span class="flight-title">Segmento di Volo 0${flightCount}</span>
+                    <img src="https://media.aviationeagle.co.uk/loghi/europa/TAP(COMPACT).png" alt="TAP Air Portugal" class="tap-logo-large1">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Numero Volo</label>
+                        <input type="text" class="flight-number" required placeholder="TP000">
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" class="flight-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Origine</label>
+                        <input type="text" class="flight-origin" required placeholder="LIS">
+                    </div>
+                    <div class="form-group">
+                        <label>Destinazione</label>
+                        <input type="text" class="flight-destination" required placeholder="FCO">
+                    </div>
+                </div>
+            `;
+            document.getElementById('flightsContainer').appendChild(flightDiv);
+            if (flightCount === maxFlights) document.getElementById('addFlightBtn').style.display = 'none';
+        }
+    });
+
+    // Funzione per convertire in Base64 e forzare la compressione sotto 1MB
+    const processFile = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1200;
+                    const MAX_HEIGHT = 1200;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Compressione bilanciata al 60% qualitativo per rientrare ampiamente in Firestore
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                    resolve(dataUrl);
+                };
+            };
+            reader.onerror = error => reject(error);
+        });
+    };
+
+    // Invio Form
+    document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.innerText = "TRASMISSIONE DATI...";
+
+        try {
+            const flights = [];
+            for (let i = 1; i <= flightCount; i++) {
+                const s = document.getElementById(`flight${i}`);
+                flights.push({
+                    flight: s.querySelector('.flight-number').value.toUpperCase(),
+                    date: s.querySelector('.flight-date').value,
+                    from: s.querySelector('.flight-origin').value.toUpperCase(),
+                    to: s.querySelector('.flight-destination').value.toUpperCase()
+                });
+            }
+
+            const file = document.getElementById('fileAttachment').files[0];
+            let fileBase64 = null;
+
+            if (file) {
+                // Controllo di sicurezza preventivo sulla dimensione iniziale
+                if (file.size > 5 * 1024 * 1024) { 
+                    alert("Il file originale è troppo grande (Max 5MB prima dell'ottimizzazione automatica). Spazio Firestore insufficiente.");
+                    btn.disabled = false;
+                    btn.innerText = "Invia Report alla Redazione";
+                    return;
+                }
+                fileBase64 = await processFile(file);
+            }
+
+            // Scrittura diretta dell'oggetto unificato dentro Firestore
+            await addDoc(collection(db, "tap_reviews"), {
+                flights,
+                review: document.getElementById('reviewText').value,
+                publish_ok: document.getElementById('allowPublish').checked,
+                imageData: fileBase64, // Stringa Base64 incorporata
+                timestamp: new Date()
+            });
+
+            alert("Rapporto inviato con successo. Grazie per il contributo a Aviation Eagle.");
+            location.reload();
+
+        } catch (err) {
+            console.error("Errore di scrittura uplink Firestore: ", err);
+            alert("Errore nell'invio. Verifica che i dati non eccedano le specifiche.");
+            btn.disabled = false;
+            btn.innerText = "Invia Report alla Redazione";
+        }
+    });
+</script>
+
+</body>
+</html>
