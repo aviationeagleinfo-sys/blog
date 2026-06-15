@@ -285,17 +285,17 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // CONFIGURAZIONE FIREBASE
     const firebaseConfig = {
-  apiKey: "AIzaSyDwHi9Lwv-AQoNWaBvhFXZKrxDFsnOampI",
-  authDomain: "datirecenzionicustomer.firebaseapp.com",
-  projectId: "datirecenzionicustomer",
-  storageBucket: "datirecenzionicustomer.firebasestorage.app",
-  messagingSenderId: "870963434082",
-  appId: "1:870963434082:web:16b8746412cb62972ef73b"
-};
+        apiKey: "AIzaSyDwHi9Lwv-AQoNWaBvhFXZKrxDFsnOampI",
+        authDomain: "datirecenzionicustomer.firebaseapp.com",
+        projectId: "datirecenzionicustomer",
+        storageBucket: "datirecenzionicustomer.firebasestorage.app",
+        messagingSenderId: "870963434082",
+        appId: "1:870963434082:web:16b8746412cb62972ef73b"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -370,7 +370,6 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Compressione bilanciata al 60% qualitativo per rientrare ampiamente in Firestore
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
                     resolve(dataUrl);
                 };
@@ -402,7 +401,6 @@
             let fileBase64 = null;
 
             if (file) {
-                // Controllo di sicurezza preventivo sulla dimensione iniziale
                 if (file.size > 5 * 1024 * 1024) { 
                     alert("Il file originale è troppo grande (Max 5MB prima dell'ottimizzazione automatica). Spazio Firestore insufficiente.");
                     btn.disabled = false;
@@ -412,12 +410,20 @@
                 fileBase64 = await processFile(file);
             }
 
-            // Scrittura diretta dell'oggetto unificato dentro Firestore
-            await addDoc(collection(db, "tap_reviews"), {
+            // Generazione preventiva del riferimento documento per estrarre l'ID univoco
+            const newDocRef = doc(collection(db, "tap_reviews"));
+            const generatedId = newDocRef.id;
+
+            // Costruzione automatica della stringa URL di ispezione diretta
+            const urlIspezione = `https://blog.aviationeagle.co.uk/admin/security/reviewinfo/file/control.html?id=${generatedId}`;
+
+            // Scrittura dei dati su Cloud Firestore utilizzando setDoc
+            await setDoc(newDocRef, {
                 flights,
                 review: document.getElementById('reviewText').value,
                 publish_ok: document.getElementById('allowPublish').checked,
-                imageData: fileBase64, // Stringa Base64 incorporata
+                imageData: fileBase64,
+                link_controllo: urlIspezione, // Questo campo conterrà il link pronto nella console Firebase
                 timestamp: new Date()
             });
 
