@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console Amministrazione - Report Volo TAP</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; padding: 40px 20px; display: flex; justify-content: center; }
+        .card { background: #fff; width: 100%; max-width: 700px; padding: 30px; border: 1px solid #e0e0e0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { border-bottom: 2px solid #000; padding-bottom: 10px; font-size: 1.5rem; text-transform: uppercase; }
+        .meta-info { background: #f9f9f9; padding: 15px; border-left: 4px solid #00965d; margin-bottom: 20px; font-size: 0.9rem; }
+        .flight-box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; background: #fff; }
+        .review-text { background: #fff; border: 1px solid #000; padding: 20px; margin-top: 20px; white-space: pre-wrap; line-height: 1.6; }
+        .image-container { margin-top: 30px; text-align: center; }
+        .image-container img { max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .error { color: #e31937; font-weight: bold; text-align: center; }
+        .loading { text-align: center; font-style: italic; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="card" id="output">
+    <div class="loading">Inizializzazione scansione database e recupero dati...</div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // CONFIGURAZIONE FIREBASE (Usa le stesse credenziali del form)
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Recupera l'ID del documento dai parametri dell'URL (?id=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const reportId = urlParams.get('id');
+
+    const container = document.getElementById('output');
+
+    if (!reportId) {
+        container.innerHTML = "<div class='error'>Errore: ID del report non specificato nell'URL di navigazione.</div>";
+    } else {
+        async function loadReport() {
+            try {
+                const docRef = doc(db, "tap_reviews", reportId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // Generazione HTML per le tratte aeree
+                    let flightsHtml = '';
+                    data.flights.forEach((f, index) => {
+                        flightsHtml += `
+                            <div class="flight-box">
+                                <strong>Segmento ${index + 1}:</strong> Volo ${f.flight} | Data: ${f.date} <br>
+                                <strong>Rotta:</strong> ${f.from} ➔ ${f.to}
+                            </div>
+                        `;
+                    });
+
+                    // Render dei dati a schermo
+                    container.innerHTML = `
+                        <h1>Dettaglio Report Volo TAP</h1>
+                        <div class="meta-info">
+                            <strong>ID Documento:</strong> ${reportId}<br>
+                            <strong>Data Ricezione:</strong> ${data.timestamp ? data.timestamp.toDate().toLocaleString() : 'N/D'}<br>
+                            <strong>Autorizzazione Pubblicazione:</strong> ${data.publish_ok ? '✅ SÌ' : '❌ NO'}
+                        </div>
+                        
+                        <h3>Tratte Volo Registrate</h3>
+                        ${flightsHtml}
+
+                        <h3>Analisi ed Esperienza del Passeggero</h3>
+                        <div class="review-text">${data.review}</div>
+
+                        <h3>Allegato Tecnico / Immagine</h3>
+                        <div class="image-container">
+                            ${data.imageData ? `<img src="${data.imageData}" alt="Allegato Volo">` : '<p style="color:#666;">Nessun allegato fotografico inserito.</p>'}
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = "<div class='error'>Errore: Il report richiesto non esiste o è stato rimosso dal database.</div>";
+                }
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = "<div class='error'>Errore critico durante l'accesso a Firestore. Verifica le regole di lettura.</div>";
+            }
+        }
+        loadReport();
+    }
+</script>
+
+</body>
+</html>
