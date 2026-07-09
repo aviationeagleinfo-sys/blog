@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Volo Air France-KLM - Aviation Eagle</title>
+    <link rel="icon" type="image/x-icon" href="https://media.aviationeagle.co.uk/favicon.ico">
+    
+    <style>
+        :root {
+            --af-blue: #002157;
+            --af-red: #ed2939;
+            --klm-blue: #00a1de;
+            --transavia-green: #00d66c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            animation: fadeInBody 0.6s ease-out;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 0px; /* Design squadrato e professionale */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            transition: box-shadow var(--transition-speed);
+        }
+
+        .container:hover {
+            box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+        }
+
+        /* Header Layout */
+        .header-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 30px;
+        }
+
+        .ae-logo {
+            height: 105px;
+            margin-bottom: 25px;
+            transition: transform var(--transition-speed);
+        }
+        .ae-logo:hover {
+            transform: scale(1.03);
+        }
+
+        .group-logo-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .airline-logo-large {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+            filter: grayscale(20%);
+            transition: all var(--transition-speed);
+        }
+         .airline-logo-large1 {
+            height: 65px;
+            width: auto;
+            object-fit: contain;
+            filter: grayscale(20%);
+            transition: all var(--transition-speed);
+        }
+        .airline-logo-large:hover {
+            filter: grayscale(0%);
+            transform: translateY(-5px);
+        }.airline-logo-large1:hover {
+            filter: grayscale(0%);
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        /* Flight Sections */
+        .flight-section {
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            background: #fdfdfd;
+            animation: slideInSegment var(--transition-speed) ease-out forwards;
+            overflow: hidden;
+            transition: all var(--transition-speed);
+        }
+
+        .flight-section:hover {
+            border-color: #999;
+            background: #ffffff;
+        }
+
+        @keyframes slideInSegment {
+            from { opacity: 0; transform: scale(0.98) translateY(15px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Linea decorativa dinamica che unisce i brand */
+        .flight-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--af-blue) 33%, var(--klm-blue) 33% 66%, var(--transavia-green) 66%);
+        }
+
+        .flight-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .flight-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #000;
+            letter-spacing: 0.5px;
+        }
+
+        /* Form Styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="date"], select, textarea, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            font-size: 0.95rem;
+            color: #000;
+            box-sizing: border-box;
+            background: #fff;
+            transition: all var(--transition-speed);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #000;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.03);
+            background: #fff;
+        }
+
+        textarea {
+            height: 150px;
+            border: 1px solid #000;
+            resize: vertical;
+        }
+
+        /* Custom Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            margin: 30px 0;
+            transition: background var(--transition-speed);
+        }
+        .checkbox-container:hover {
+            background: #f1f1f1;
+        }
+
+        .checkbox-container input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--af-blue);
+            cursor: pointer;
+        }
+
+        .checkbox-container label {
+            text-transform: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn-add {
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            padding: 12px 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-bottom: 40px;
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-add:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit {
+            background: var(--af-blue);
+            color: #fff;
+            border: none;
+            padding: 18px;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            box-shadow: 0 4px 12px rgba(0,33,87,0.15);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,33,87,0.25);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .file-upload-info {
+            font-size: 0.75rem;
+            color: var(--af-red);
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-layout">
+        <a href="https://aviationeagle.co.uk">
+            <img src="https://media.aviationeagle.co.uk/Aviation-Eagle-Compact-TM-RBG.png" alt="Aviation Eagle" class="ae-logo">
+        </a>
+        <div class="group-logo-container">
+            <!-- Loghi rappresentativi del network Air France-KLM -->
+            <img src="https://media.aviationeagle.co.uk/loghi/europa/AirFranceHopLogoFull.png" alt="Air France HOP" class="airline-logo-large" onerror="this.style.display='none'">
+            <img src="https://media.aviationeagle.co.uk/loghi/europa/AirFranceLogo(COMPACT).jpeg" alt="Air France" class="airline-logo-large1" onerror="this.style.display='none'">
+             <img src="https://media.aviationeagle.co.uk/loghi/europa/KLMLogo.png" alt="KLM" class="airline-logo-large" onerror="this.style.display='none'">
+              <img src="https://upload.wikimedia.org/wikipedia/it/c/c1/KLM_Cityhopper_Logo.png" alt="KLM CityHopper" class="airline-logo-large" onerror="this.style.display='none'">
+               <img src="https://media.aviationeagle.co.uk/loghi/europa/TransaviaLogo.png" alt="Transavia" class="airline-logo-large" onerror="this.style.display='none'">
+        </div>
+        <h2>Report Esperienza di Volo AF-KLM Group</h2>
+    </div>
+    
+    <form id="reviewForm">
+        <div id="flightsContainer">
+            <!-- Il primo segmento viene iniettato dinamicamente per garantire consistenza logica e strutturale -->
+        </div>
+
+        <button type="button" id="addFlightBtn" class="btn-add">+ Aggiungi scalo operato AF-KLM / Partner</button>
+
+        <div class="form-group">
+            <label>Analisi del Volo e Recensione Globale</label>
+            <textarea id="reviewText" required placeholder="Descrivi il servizio a bordo, l'efficienza degli hub (CDG/AMS), l'equipaggio, le lounge e l'esperienza complessiva..."></textarea>
+        </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="allowPublish">
+            <label for="allowPublish">Autorizzo Aviation Eagle alla pubblicazione del presente report nel blog ufficiale.</label>
+        </div>
+
+        <button type="submit" class="btn-submit">Invia Report alla Redazione</button>
+    </form>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // CONFIGURAZIONE FIREBASE
+    const firebaseConfig = {
+        apiKey: "AIzaSyDwHi9Lwv-AQoNWaBvhFXZKrxDFsnOampI",
+        authDomain: "datirecenzionicustomer.firebaseapp.com",
+        projectId: "datirecenzionicustomer",
+        storageBucket: "datirecenzionicustomer.firebasestorage.app",
+        messagingSenderId: "870963434082",
+        appId: "1:870963434082:web:16b8746412cb62972ef73b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let flightCount = 0;
+    const maxFlights = 4; // Incrementato a un massimo di 4 voli complessivi
+
+    // Funzione per generare la struttura di un segmento di volo
+    const createFlightSegment = () => {
+        if (flightCount >= maxFlights) return;
+        flightCount++;
+        
+        const container = document.getElementById('flightsContainer');
+        const flightDiv = document.createElement('div');
+        flightDiv.classList.add('flight-section');
+        flightDiv.id = `flight${flightCount}`;
+        
+        flightDiv.innerHTML = `
+            <div class="flight-header">
+                <span class="flight-title">Segmento di Volo 0${flightCount}</span>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Compagnia Aerea</label>
+                    <select class="flight-airline" required>
+                        <option value="" disabled selected>Seleziona Compagnia...</option>
+                        <option value="Air France">Air France</option>
+                        <option value="Air France HOP">Air France HOP</option>
+                        <option value="KLM">KLM</option>
+                        <option value="KLM Cityhopper">KLM Cityhopper</option>
+                        <option value="Transavia">Transavia</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Codice Compagnia (IATA)</label>
+                    <select class="flight-iata" required disabled>
+                        <option value="" disabled selected>In attesa di selezione...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Numero Volo</label>
+                    <input type="text" class="flight-number" required placeholder="1234">
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" class="flight-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Origine (ICAO/IATA)</label>
+                    <input type="text" class="flight-origin" required placeholder="CDG / AMS">
+                </div>
+                <div class="form-group">
+                    <label>Destinazione (ICAO/IATA)</label>
+                    <input type="text" class="flight-destination" required placeholder="FCO / JFK">
+                </div>
+                <div class="form-group full-width">
+                    <label>Allegato Tecnico / Foto Segmento (Max 5MB)</label>
+                    <input type="file" class="flight-file" accept="image/*">
+                    <div class="file-upload-info">L'immagine verrà compressa sotto 1MB per l'uplink al Database.</div>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(flightDiv);
+        
+        // Logica di monitoraggio dinamica per il cambio della compagnia selezionata
+        const airlineSelect = flightDiv.querySelector('.flight-airline');
+        const iataSelect = flightDiv.querySelector('.flight-iata');
+        
+        airlineSelect.addEventListener('change', (e) => {
+            const airline = e.target.value;
+            iataSelect.innerHTML = ''; // Reset opzioni
+            iataSelect.disabled = false;
+            
+            if (airline === "Air France") {
+                iataSelect.innerHTML = `<option value="AF" selected>AF (Air France)</option>`;
+            } else if (airline === "KLM") {
+                iataSelect.innerHTML = `<option value="KL" selected>KL (KLM Royal Dutch Airlines)</option>`;
+            } else if (airline === "Transavia") {
+                iataSelect.innerHTML = `<option value="HV" selected>HV (Transavia)</option>`;
+            } else if (airline === "Air France HOP" || airline === "KLM Cityhopper") {
+                // Selezione multipla opzionale per i vettori regional/partner sussidiari
+                iataSelect.innerHTML = `
+                    <option value="" disabled selected>Scegli Codice Operativo...</option>
+                    <option value="AF">AF (Air France)</option>
+                    <option value="KL">KL (KLM)</option>
+                    <option value="A6">A6 (Air France HOP Old)</option>
+                `;
+            }
+        });
+
+        if (flightCount === maxFlights) {
+            document.getElementById('addFlightBtn').style.display = 'none';
+        }
+    };
+
+    // Inizializzazione primo segmento
+    createFlightSegment();
+
+    // Event listener per aggiunta segmenti successivi
+    document.getElementById('addFlightBtn').addEventListener('click', createFlightSegment);
+
+    // Funzione per convertire l'immagine in Base64 ed eseguirne il resizing/compressione qualitativa
+    const processFile = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1200;
+                    const MAX_HEIGHT = 1200;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Compressione bilanciata al 60% per rimanere nettamente sotto il limite Firestore dei documenti
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                    resolve(dataUrl);
+                };
+            };
+            reader.onerror = error => reject(error);
+        });
+    };
+
+    // Intercettazione invio modulo e trasmissione dati
+    document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.innerText = "TRASMISSIONE IN CORSO...";
+
+        try {
+            const flights = [];
+            
+            // Loop analitico per estrarre le info da ciascun segmento popolato
+            for (let i = 1; i <= flightCount; i++) {
+                const s = document.getElementById(`flight${i}`);
+                const fileInput = s.querySelector('.flight-file').files[0];
+                let fileBase64 = null;
+                
+                if (fileInput) {
+                    if (fileInput.size > 5 * 1024 * 1024) { 
+                        alert(`Errore sul Segmento 0${i}: File oltre 5MB prima dell'ottimizzazione.`);
+                        btn.disabled = false;
+                        btn.innerText = "Invia Report alla Redazione";
+                        return;
+                    }
+                    fileBase64 = await processFile(fileInput);
+                }
+
+                flights.push({
+                    segment_index: i,
+                    airline: s.querySelector('.flight-airline').value,
+                    iata_code: s.querySelector('.flight-iata').value,
+                    flight_number: s.querySelector('.flight-number').value.toUpperCase(),
+                    date: s.querySelector('.flight-date').value,
+                    from: s.querySelector('.flight-origin').value.toUpperCase(),
+                    to: s.querySelector('.flight-destination').value.toUpperCase(),
+                    imageData: fileBase64
+                });
+            }
+
+            // Generazione dell'ID univoco preventivo all'interno della nuova raccolta specifica richiesta
+            const newDocRef = doc(collection(db, "AirFrance-KLM"));
+            const generatedId = newDocRef.id;
+
+            // Creazione URL di tracciamento e controllo amministrativo diretto
+            const urlIspezione = `https://blog.aviationeagle.co.uk/admin/security/reviewinfo/file/control.html?id=${generatedId}`;
+
+            // Esecuzione scrittura atomica su Firestore
+            await setDoc(newDocRef, {
+                flights,
+                review: document.getElementById('reviewText').value,
+                publish_ok: document.getElementById('allowPublish').checked,
+                link_controllo: urlIspezione,
+                timestamp: new Date()
+            });
+
+            alert("Rapporto Air France-KLM registrato con successo. Dati inviati alla console della redazione.");
+            location.reload();
+
+        } catch (err) {
+            console.error("Errore uplink pacchetto AirFrance-KLM: ", err);
+            alert("Errore critico durante la trasmissione. Rivedi i parametri dei moduli.");
+            btn.disabled = false;
+            btn.innerText = "Invia Report alla Redazione";
+        }
+    });
+</script>
+
+</body>
+</html>
