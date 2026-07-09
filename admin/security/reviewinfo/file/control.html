@@ -132,7 +132,7 @@
         <div>
             <label>Seleziona Raccolta Target</label>
             <select id="collectionSelect">
-                <option value="AirFrance-KLM">AirFrance-KLM (Nuova Network)</option>
+                <option value="AirFrance-KLM">AirFrance-KLM (Nuovo Network)</option>
                 <option value="tap_reviews">tap_reviews (TAP Portugal)</option>
             </select>
         </div>
@@ -153,7 +153,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // CONFIGURAZIONE FIREBASE CORRENTE
+    // CONFIGURAZIONE FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyDwHi9Lwv-AQoNWaBvhFXZKrxDFsnOampI",
         authDomain: "datirecenzionicustomer.firebaseapp.com",
@@ -192,7 +192,6 @@
             // Algoritmo di decodifica flessibile dei segmenti di volo
             if (data.flights && Array.isArray(data.flights)) {
                 data.flights.forEach((f, index) => {
-                    // Gestione fallback per visualizzare sia vettori singoli che multi-compagnia
                     const airlineInfo = f.airline ? `[${f.airline}] ` : '';
                     const iataInfo = f.iata_code ? `${f.iata_code}` : (f.flight ? f.flight.substring(0,2) : 'N/D');
                     const flightNum = f.flight_number ? f.flight_number : (f.flight ? f.flight.replace(/^\D+/g, '') : '');
@@ -258,14 +257,14 @@
             return;
         }
 
-        // Aggiorna dinamicamente la barra degli indirizzi URL del browser con i nuovi parametri di ispezione
+        // CORRETTO: Cambia l'URL senza ricaricare la pagina per permettere la condivisione diretta del link
         const newUrl = `${window.location.pathname}?col=${selectedCollection}&id=${inputId}`;
-        window.history.pushBox({}, '', newUrl);
+        window.history.pushState({}, '', newUrl);
 
         fetchReportData(selectedCollection, inputId);
     });
 
-    // Analisi automatica dei parametri all'avvio (Consente l'apertura immediata da link esterno)
+    // Analisi automatica dei parametri all'avvio (Carica subito se apri il link salvato)
     const urlParams = new URLSearchParams(window.location.search);
     const queryCol = urlParams.get('col');
     const queryId = urlParams.get('id');
