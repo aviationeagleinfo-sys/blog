@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ispezione Report - Air France Redazione</title>
+    <link rel="icon" type="image/x-icon" href="https://media.aviationeagle.co.uk/favicon.ico">
+    <style>
+        :root {
+            --af-blue: #002157;
+            --af-red: #ed2939;
+            --border-color: #e0e0e0;
+            --bg-color: #f4f6f9;
+        }
+
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            background: var(--bg-color); 
+            color: #1a1a1a; 
+            padding: 40px 20px; 
+            display: flex; 
+            justify-content: center; 
+            animation: fadeInBody 0.4s ease-out;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card { 
+            background: #fff; 
+            width: 100%; 
+            max-width: 750px; 
+            padding: 40px; 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06); 
+            position: relative;
+        }
+
+        /* Linea di accento rossa Air France in alto */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--af-red);
+        }
+
+        .header-console {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--af-blue);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo-box img {
+            height: 30px;
+            object-fit: contain;
+        }
+
+        h1 { 
+            margin: 0;
+            font-size: 1.3rem; 
+            text-transform: uppercase; 
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: var(--af-blue);
+        }
+        
+        .meta-info { 
+            background: #f8f9fa; 
+            padding: 18px; 
+            border-left: 4px solid var(--af-blue); 
+            margin-bottom: 30px; 
+            font-size: 0.9rem; 
+            line-height: 1.5;
+        }
+        
+        .flight-box { 
+            border: 1px solid #e5e5e5; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            background: #fdfdfd; 
+            transition: border-color 0.2s;
+        }
+
+        .flight-box:hover {
+            border-color: #b5b5b5;
+        }
+        
+        .review-text { 
+            background: #fff; 
+            border: 1px solid var(--af-blue); 
+            padding: 25px; 
+            margin: 25px 0; 
+            white-space: pre-wrap; 
+            line-height: 1.6; 
+            font-size: 0.98rem;
+        }
+        
+        .image-container { 
+            margin-top: 15px; 
+            text-align: center; 
+            background: #f9f9f9; 
+            padding: 12px; 
+            border: 1px solid #eee; 
+        }
+
+        .image-container img { 
+            max-width: 100%; 
+            max-height: 450px; 
+            height: auto; 
+            border: 1px solid #ddd; 
+            object-fit: contain; 
+        }
+        
+        .error { 
+            color: var(--af-red); 
+            font-weight: bold; 
+            text-align: center; 
+            padding: 30px; 
+            border: 1px dashed var(--af-red);
+            background: #fff5f5;
+        }
+
+        .status-msg { 
+            text-align: center; 
+            font-style: italic; 
+            color: #666; 
+            padding: 60px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="outputCard">
+    <div id="statusMsg" class="status-msg">Aggancio del segnale Firestore e scaricamento telemetria in corso...</div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // CONFIGURAZIONE APPLICAZIONE FIREBASE
+    const firebaseConfig = {
+        apiKey: "AIzaSyDwHi9Lwv-AQoNWaBvhFXZKrxDFsnOampI",
+        authDomain: "datirecenzionicustomer.firebaseapp.com",
+        projectId: "datirecenzionicustomer",
+        storageBucket: "datirecenzionicustomer.firebasestorage.app",
+        messagingSenderId: "870963434082",
+        appId: "1:870963434082:web:16b8746412cb62972ef73b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const container = document.getElementById('outputCard');
+
+    // Intercettazione del parametro ?id= dall'URL del browser
+    const urlParams = new URLSearchParams(window.location.search);
+    const reportId = urlParams.get('id');
+
+    async function loadAirFranceReport() {
+        if (!reportId) {
+            container.innerHTML = `<div class='error'>ERRORE CRITICO: Nessun identificativo di report impostato nell'URL. Aggiungere '?id=ID_DOCUMENTO'.</div>`;
+            return;
+        }
+
+        try {
+            // Target impostato rigorosamente sulla raccolta unificata del network
+            const docRef = doc(db, "AirFrance-KLM", reportId);
+            const docSnap = await getDoc(docRef);
+
+            if (!docSnap.exists()) {
+                container.innerHTML = `<div class='error'>SISTEMA INFORMATIVO: Il report con ID [${reportId}] non è stato trovato nella raccolta AirFrance-KLM.</div>`;
+                return;
+            }
+
+            const data = docSnap.data();
+            let flightsHtml = '';
+
+            // Elaborazione sequenziale dei segmenti di volo caricati
+            if (data.flights && Array.isArray(data.flights)) {
+                data.flights.forEach((f, index) => {
+                    flightsHtml += `
+                        <div class="flight-box">
+                            <span style="color: var(--af-red); font-weight:800; font-size:0.8rem; text-transform:uppercase; display:block; margin-bottom:5px;">Tratta 0${index + 1}</span>
+                            <strong>Vettore Operante:</strong> ${f.airline || 'Air France'} <br>
+                            <strong>Identificativo Volo:</strong> ${f.iata_code || 'AF'}${f.flight_number || 'N/D'} <br>
+                            <strong>Data Partenza:</strong> ${f.date || 'N/D'} | <strong>Rotta:</strong> ${f.from || 'N/D'} ➔ ${f.to || 'N/D'}
+                            
+                            ${f.imageData ? `
+                                <div class="image-container">
+                                    <span style="font-size:0.75rem; font-weight:700; color:#666; text-transform:uppercase; display:block; margin-bottom:8px;">Allegato Documentale Interno</span>
+                                    <img src="${f.imageData}" alt="Documentazione Segmento">
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+            }
+
+            // Composizione dell'interfaccia ad hoc Air France
+            container.innerHTML = `
+                <div class="header-console">
+                    <h1>Ispezione Telemetrica Volo</h1>
+                    <div class="logo-box">
+                        <img src="https://media.aviationeagle.co.uk/Aviation-Eagle-Compact-TM-RBG.png" alt="AE Logo" style="margin-right:15px;">
+                        <img src="https://media.aviationeagle.co.uk/loghi/europa/AIRFRANCE(COMPACT).png" alt="AF Logo">
+                    </div>
+                </div>
+
+                <div class="meta-info">
+                    <strong>Raccolta del Database:</strong> AirFrance-KLM<br>
+                    <strong>ID Report di Controllo:</strong> ${reportId}<br>
+                    <strong>Data di Ricezione Uplink:</strong> ${data.timestamp ? data.timestamp.toDate().toLocaleString() : 'N/D'}<br>
+                    <strong>Stato Distribuzione Autorizzata:</strong> ${data.publish_ok ? '<span style="color:#00965d; font-weight:700;">✅ SÌ (Pubblicazione Blog Approvata)</span>' : '<span style="color:var(--af-red); font-weight:700;">❌ NO (Uso Esclusivo Interno)</span>'}
+                </div>
+                
+                <h3 style="text-transform:uppercase; font-size:0.9rem; letter-spacing:0.5px; color:var(--af-blue);">Analisi Logistica dei Segmenti</h3>
+                ${flightsHtml || '<p style="color:#666; font-style:italic;">Nessun segmento di volo registrato in archivio.</p>'}
+
+                <h3 style="text-transform:uppercase; font-size:0.9rem; letter-spacing:0.5px; color:var(--af-blue); margin-top:30px;">Valutazione Tecnica del Passeggero</h3>
+                <div class="review-text">${data.review || 'Nessun testo inserito dal passeggero.'}</div>
+            `;
+
+        } catch (error) {
+            console.error("Dettaglio avaria di lettura: ", error);
+            container.innerHTML = `<div class='error'>ERRORE DI RETE: Impossibile decodificare il pacchetto o permessi di lettura Firestore non concessi.</div>`;
+        }
+    }
+
+    // Esecuzione immediata della sequenza di avvio
+    loadAirFranceReport();
+</script>
+
+</body>
+</html>
