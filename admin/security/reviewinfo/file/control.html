@@ -3,100 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Console Amministrazione - Report Volo TAP</title>
+    <title>Console Controllo Redazione - Aviation Eagle</title>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; padding: 40px 20px; display: flex; justify-content: center; }
-        .card { background: #fff; width: 100%; max-width: 700px; padding: 30px; border: 1px solid #e0e0e0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { border-bottom: 2px solid #000; padding-bottom: 10px; font-size: 1.5rem; text-transform: uppercase; }
-        .meta-info { background: #f9f9f9; padding: 15px; border-left: 4px solid #00965d; margin-bottom: 20px; font-size: 0.9rem; }
-        .flight-box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; background: #fff; }
-        .review-text { background: #fff; border: 1px solid #000; padding: 20px; margin-top: 20px; white-space: pre-wrap; line-height: 1.6; }
-        .image-container { margin-top: 30px; text-align: center; }
-        .image-container img { max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .error { color: #e31937; font-weight: bold; text-align: center; }
-        .loading { text-align: center; font-style: italic; color: #666; }
+        :root {
+            --ae-blue: #002157;
+            --border-color: #e0e0e0;
+            --bg-color: #f8f9fa;
+        }
+
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            background: var(--bg-color); 
+            color: #1a1a1a; 
+            padding: 40px 20px; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+        }
+
+        .admin-panel {
+            background: #fff;
+            width: 100%;
+            max-width: 750px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .admin-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: var(--ae-blue);
+            border-left: 3px solid var(--ae-blue);
+            padding-left: 10px;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            color: #666;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        select:focus, input:focus {
+            border-color: #000;
+            outline: none;
+        }
+
+        .btn-inspect {
+            background: var(--ae-blue);
+            color: #fff;
+            border: none;
+            padding: 11px 25px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-inspect:hover {
+            opacity: 0.9;
+        }
+
+        /* Card Output */
+        .card { 
+            background: #fff; 
+            width: 100%; 
+            max-width: 750px; 
+            padding: 35px; 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { border-bottom: 2px solid #000; padding-bottom: 10px; font-size: 1.4rem; text-transform: uppercase; margin-top: 0; }
+        
+        .meta-info { background: #f9f9f9; padding: 15px; border-left: 4px solid var(--ae-blue); margin-bottom: 25px; font-size: 0.9rem; }
+        
+        .flight-box { border: 1px solid #e0e0e0; padding: 15px; margin-bottom: 15px; background: #fdfdfd; position: relative; }
+        
+        .review-text { background: #fff; border: 1px solid #000; padding: 20px; margin: 20px 0; white-space: pre-wrap; line-height: 1.6; }
+        
+        .image-container { margin-top: 15px; text-align: center; background: #f9f9f9; padding: 10px; border: 1px solid #eee; }
+        .image-container img { max-width: 100%; max-height: 400px; height: auto; border: 1px solid #ccc; object-fit: contain; }
+        
+        .error { color: #e31937; font-weight: bold; text-align: center; padding: 20px; background: #fff; border: 1px solid var(--border-color); width: 100%; max-width: 750px; box-sizing: border-box; }
+        .placeholder-text { text-align: center; font-style: italic; color: #888; padding: 40px; }
+
+        @media (max-width: 600px) {
+            .control-grid { grid-template-columns: 1fr; }
+            .btn-inspect { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
-<div class="card" id="output">
-    <div class="loading">Inizializzazione scansione database e recupero dati...</div>
+<div class="admin-panel">
+    <div class="admin-title">Quadro Tattico di Ispezione Database</div>
+    <div class="control-grid">
+        <div>
+            <label>Seleziona Raccolta Target</label>
+            <select id="collectionSelect">
+                <option value="AirFrance-KLM">AirFrance-KLM (Nuova Network)</option>
+                <option value="tap_reviews">tap_reviews (TAP Portugal)</option>
+            </select>
+        </div>
+        <div>
+            <label>ID Documento (Firestore GUID)</label>
+            <input type="text" id="documentIdInput" placeholder="Inserisci stringa ID...">
+        </div>
+        <div>
+            <button type="button" id="inspectBtn" class="btn-inspect">Esegui Scansione</button>
+        </div>
+    </div>
 </div>
+
+<div class="card" id="outputCard"></div>
+<div id="statusPlaceholder" class="placeholder-text">Inserisci i parametri di uplink per visualizzare il report telemetrico.</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // CONFIGURAZIONE FIREBASE (Usa le stesse credenziali del form)
+    // CONFIGURAZIONE FIREBASE CORRENTE
     const firebaseConfig = {
-  apiKey: "AIzaSyDwHi9Lwv-AQoNWaBvhFXZKrxDFsnOampI",
-  authDomain: "datirecenzionicustomer.firebaseapp.com",
-  projectId: "datirecenzionicustomer",
-  storageBucket: "datirecenzionicustomer.firebasestorage.app",
-  messagingSenderId: "870963434082",
-  appId: "1:870963434082:web:16b8746412cb62972ef73b"
-};
+        apiKey: "AIzaSyDwHi9Lwv-AQoNWaBvhFXZKrxDFsnOampI",
+        authDomain: "datirecenzionicustomer.firebaseapp.com",
+        projectId: "datirecenzionicustomer",
+        storageBucket: "datirecenzionicustomer.firebasestorage.app",
+        messagingSenderId: "870963434082",
+        appId: "1:870963434082:web:16b8746412cb62972ef73b"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Recupera l'ID del documento dai parametri dell'URL (?id=...)
-    const urlParams = new URLSearchParams(window.location.search);
-    const reportId = urlParams.get('id');
+    const outputCard = document.getElementById('outputCard');
+    const placeholder = document.getElementById('statusPlaceholder');
 
-    const container = document.getElementById('output');
+    // Funzione principale di scaricamento e rendering del report informativo
+    async function fetchReportData(targetCollection, docId) {
+        placeholder.style.display = 'block';
+        placeholder.innerText = "Intercettazione pacchetto dati in corso...";
+        outputCard.style.display = 'none';
 
-    if (!reportId) {
-        container.innerHTML = "<div class='error'>Errore: ID del report non specificato nell'URL di navigazione.</div>";
-    } else {
-        async function loadReport() {
-            try {
-                const docRef = doc(db, "tap_reviews", reportId);
-                const docSnap = await getDoc(docRef);
+        try {
+            const docRef = doc(db, targetCollection, docId);
+            const docSnap = await getDoc(docRef);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    
-                    // Generazione HTML per le tratte aeree
-                    let flightsHtml = '';
-                    data.flights.forEach((f, index) => {
-                        flightsHtml += `
-                            <div class="flight-box">
-                                <strong>Segmento ${index + 1}:</strong> Volo ${f.flight} | Data: ${f.date} <br>
-                                <strong>Rotta:</strong> ${f.from} ➔ ${f.to}
-                            </div>
-                        `;
-                    });
+            if (!docSnap.exists()) {
+                placeholder.style.display = 'none';
+                outputCard.innerHTML = `<div class='error'>Errore di Target: Il documento [${docId}] non esiste nella raccolta [${targetCollection}].</div>`;
+                outputCard.style.display = 'block';
+                return;
+            }
 
-                    // Render dei dati a schermo
-                    container.innerHTML = `
-                        <h1>Dettaglio Report Volo TAP</h1>
-                        <div class="meta-info">
-                            <strong>ID Documento:</strong> ${reportId}<br>
-                            <strong>Data Ricezione:</strong> ${data.timestamp ? data.timestamp.toDate().toLocaleString() : 'N/D'}<br>
-                            <strong>Autorizzazione Pubblicazione:</strong> ${data.publish_ok ? '✅ SÌ' : '❌ NO'}
-                        </div>
-                        
-                        <h3>Tratte Volo Registrate</h3>
-                        ${flightsHtml}
+            const data = docSnap.data();
+            let flightsHtml = '';
 
-                        <h3>Analisi ed Esperienza del Passeggero</h3>
-                        <div class="review-text">${data.review}</div>
+            // Algoritmo di decodifica flessibile dei segmenti di volo
+            if (data.flights && Array.isArray(data.flights)) {
+                data.flights.forEach((f, index) => {
+                    // Gestione fallback per visualizzare sia vettori singoli che multi-compagnia
+                    const airlineInfo = f.airline ? `[${f.airline}] ` : '';
+                    const iataInfo = f.iata_code ? `${f.iata_code}` : (f.flight ? f.flight.substring(0,2) : 'N/D');
+                    const flightNum = f.flight_number ? f.flight_number : (f.flight ? f.flight.replace(/^\D+/g, '') : '');
 
-                        <h3>Allegato Tecnico / Immagine</h3>
-                        <div class="image-container">
-                            ${data.imageData ? `<img src="${data.imageData}" alt="Allegato Volo">` : '<p style="color:#666;">Nessun allegato fotografico inserito.</p>'}
+                    flightsHtml += `
+                        <div class="flight-box">
+                            <strong>Segmento 0${index + 1}:</strong> ${airlineInfo}Volo ${iataInfo}${flightNum} | Data: ${f.date || 'N/D'} <br>
+                            <strong>Rotta:</strong> ${f.from || 'N/D'} ➔ ${f.to || 'N/D'}
+                            
+                            ${f.imageData ? `
+                                <div class="image-container">
+                                    <label>Allegato Tecnico Segmento</label><br>
+                                    <img src="${f.imageData}" alt="Foto Segmento">
+                                </div>
+                            ` : ''}
                         </div>
                     `;
-                } else {
-                    container.innerHTML = "<div class='error'>Errore: Il report richiesto non esiste o è stato rimosso dal database.</div>";
-                }
-            } catch (error) {
-                console.error(error);
-                container.innerHTML = "<div class='error'>Errore critico durante l'accesso a Firestore. Verifica le regole di lettura.</div>";
+                });
             }
+
+            // Struttura HTML del report finale unificato
+            outputCard.innerHTML = `
+                <h1>Dettaglio Report Operativo</h1>
+                <div class="meta-info">
+                    <strong>Raccolta Origine:</strong> ${targetCollection}<br>
+                    <strong>ID Documento:</strong> ${docId}<br>
+                    <strong>Data Ricezione:</strong> ${data.timestamp ? data.timestamp.toDate().toLocaleString() : 'N/D'}<br>
+                    <strong>Autorizzazione Pubblicazione Blog:</strong> ${data.publish_ok ? '✅ AUTORIZZATA' : '❌ NEGATA'}
+                </div>
+                
+                <h3>Segmenti di Tratta Analizzati</h3>
+                ${flightsHtml || '<p>Nessun segmento registrato.</p>'}
+
+                <h3>Testo della Recensione / Analisi Redazionale</h3>
+                <div class="review-text">${data.review || 'Nessun testo inserito.'}</div>
+
+                ${data.imageData ? `
+                    <h3>Allegato Report Globale</h3>
+                    <div class="image-container">
+                        <img src="${data.imageData}" alt="Allegato Globale">
+                    </div>
+                ` : ''}
+            `;
+
+            placeholder.style.display = 'none';
+            outputCard.style.display = 'block';
+
+        } catch (error) {
+            console.error("Dettaglio errore di scansione: ", error);
+            placeholder.style.display = 'none';
+            outputCard.innerHTML = "<div class='error'>Errore critico durante la decodifica dei moduli o restrizione di sicurezza Firebase.</div>";
+            outputCard.style.display = 'block';
         }
-        loadReport();
+    }
+
+    // Gestore dell'azione del pulsante di ispezione
+    document.getElementById('inspectBtn').addEventListener('click', () => {
+        const selectedCollection = document.getElementById('collectionSelect').value;
+        const inputId = document.getElementById('documentIdInput').value.trim();
+
+        if (!inputId) {
+            alert("Comandante, inserisci un ID di documento valido prima di procedere.");
+            return;
+        }
+
+        // Aggiorna dinamicamente la barra degli indirizzi URL del browser con i nuovi parametri di ispezione
+        const newUrl = `${window.location.pathname}?col=${selectedCollection}&id=${inputId}`;
+        window.history.pushBox({}, '', newUrl);
+
+        fetchReportData(selectedCollection, inputId);
+    });
+
+    // Analisi automatica dei parametri all'avvio (Consente l'apertura immediata da link esterno)
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryCol = urlParams.get('col');
+    const queryId = urlParams.get('id');
+
+    if (queryCol && queryId) {
+        document.getElementById('collectionSelect').value = queryCol;
+        document.getElementById('documentIdInput').value = queryId;
+        fetchReportData(queryCol, queryId);
     }
 </script>
 
